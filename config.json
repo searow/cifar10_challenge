@@ -50,7 +50,7 @@
 
   "_comment": "===== EVAL CONFIGURATION =====",
   "num_eval_examples": 10000,
-  "eval_batch_size": 10,
+  "eval_batch_size": 100,
   "eval_on_cpu": false,
   "delete_attacks": true,
 
