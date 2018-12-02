@@ -38,16 +38,16 @@ if eval_on_cpu:
     model = Model(mode='eval')
     attack = LinfPGDAttack(model,
                            config['epsilon'],
-                           config['num_steps'],
-                           config['step_size'],
+                           config['k'],
+                           config['a'],
                            config['random_start'],
                            config['loss_func'])
 else:
   model = Model(mode='eval')
   attack = LinfPGDAttack(model,
                          config['epsilon'],
-                         config['num_steps'],
-                         config['step_size'],
+                         config['k'],
+                         config['a'],
                          config['random_start'],
                          config['loss_func'])
 

@@ -13,14 +13,14 @@ import numpy as np
 import cifar10_input
 
 class LinfPGDAttack:
-  def __init__(self, model, epsilon, num_steps, step_size, random_start, loss_func):
+  def __init__(self, model, epsilon, k, a, random_start, loss_func):
     """Attack parameter initialization. The attack performs k steps of
        size a, while always staying within epsilon from the initial
        point."""
     self.model = model
     self.epsilon = epsilon
-    self.num_steps = num_steps
-    self.step_size = step_size
+    self.k = k
+    self.a = a
     self.rand = random_start
 
     if loss_func == 'xent':
@@ -49,11 +49,13 @@ class LinfPGDAttack:
     else:
       x = np.copy(x_nat)
 
-    for i in range(self.num_steps):
+    for i in range(self.k):
       grad = sess.run(self.grad, feed_dict={self.model.x_input: x,
                                             self.model.y_input: y})
 
-      x = np.add(x, self.step_size * np.sign(grad), out=x, casting='unsafe')
+      # casting unsafe will force int values for us.
+      x = np.add(x, self.a * np.sign(grad), out=x, casting='unsafe')
+      # should force cast afterwards
 
       x = np.clip(x, x_nat - self.epsilon, x_nat + self.epsilon)
       x = np.clip(x, 0, 255) # ensure valid pixel range
@@ -80,8 +82,8 @@ if __name__ == '__main__':
   model = Model(mode='eval')
   attack = LinfPGDAttack(model,
                          config['epsilon'],
-                         config['num_steps'],
-                         config['step_size'],
+                         config['k'],
+                         config['a'],
                          config['random_start'],
                          config['loss_func'])
   saver = tf.train.Saver()

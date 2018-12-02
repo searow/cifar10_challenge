@@ -56,8 +56,8 @@ train_step = tf.train.MomentumOptimizer(learning_rate, momentum).minimize(
 # Set up adversary
 attack = LinfPGDAttack(model,
                        config['epsilon'],
-                       config['num_steps'],
-                       config['step_size'],
+                       config['k'],
+                       config['a'],
                        config['random_start'],
                        config['loss_func'])
 
